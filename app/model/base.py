@@ -1,5 +1,4 @@
 from sqlalchemy.orm import declared_attr
-
 from app import db
 
 

@@ -1,8 +1,7 @@
-from app.models.user import User
-from app import db
+from app.model.user import User
 
 
-class UserService(object):
+class UserRepository(object):
     model = User
 
     def create_user(self, username, email):
@@ -10,8 +9,6 @@ class UserService(object):
             username=username,
             email=email,
         )
-        db.session.add(user)
-        db.session.commit()
         return user
 
     def get_user_by_id(self, user_id):
