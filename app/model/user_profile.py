@@ -9,7 +9,7 @@ class UserProfile(Base):
     age = sa.Column(sa.Integer, nullable=False)
     id_number = sa.Column(sa.String(20), nullable=True)
 
-    user = relationship('User', back_populates='profile')
+    user = relationship('User', backref='UseProfile')
 
     def __repr__(self):
         return '<UserProfile %d>' % self.user_id

@@ -7,3 +7,7 @@ init db:
 one to one relation:
 
     user <-> user_profile
+
+many to many relation:
+
+    user <-> user_group <-> group
