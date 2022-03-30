@@ -1,9 +1,18 @@
+import time
+from datetime import datetime
 from flask_restful import Api, Resource, reqparse, fields, marshal_with
 from flask import Blueprint
 from app.service.user import UserService
 
 user_bp = Blueprint('user', __name__, url_prefix="/users")
 user_api = Api(user_bp)
+
+
+class UnixMillisecond(fields.Raw):
+    def format(self, value: datetime) -> float:
+        microseconds = time.mktime(value.timetuple()) * 1000 + value.microsecond
+        return microseconds
+
 
 create_fields = {
     'id': fields.Integer,
@@ -15,7 +24,7 @@ user_detail = {
     'id': fields.Integer,
     'username': fields.String,
     'email': fields.String,
-    'created_at': fields.DateTime(dt_format='iso8601'),
+    'created_at': UnixMillisecond(attribute='created_at'),
     'profile': fields.Nested(user_profile)
 }
 
