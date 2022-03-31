@@ -2,8 +2,10 @@ import os
 import yaml
 from flask import Flask as BaseFlask, Config as BaseConfig
 from flask_sqlalchemy import SQLAlchemy
+from flask_marshmallow import Marshmallow
 
 db = SQLAlchemy()
+ma = Marshmallow()
 
 
 class Config(BaseConfig):
@@ -40,6 +42,7 @@ def create_app():
     app.config.from_yaml(os.path.join(app.root_path, 'config.yml'))
     register_blueprints(app)
     db.init_app(app)
+    ma.init_app(app)
     with app.app_context():
         db.create_all()
     return app

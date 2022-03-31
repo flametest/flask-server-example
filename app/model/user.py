@@ -9,7 +9,7 @@ class User(Base):
     username = sa.Column(sa.String(80), unique=True, nullable=False)
     email = sa.Column(sa.String(120), unique=True, nullable=False)
 
-    profile = relationship('UserProfile', back_populates='user', uselist=False)
+    profile = relationship('UserProfile', backref='User', uselist=False)
     groups = relationship('Group', secondary=UserGroup.__tablename__, backref='User')
 
     def __repr__(self):

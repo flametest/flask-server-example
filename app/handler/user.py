@@ -1,79 +1,31 @@
-import time
-from datetime import datetime
-from flask_restful import Api, Resource, reqparse, fields, marshal_with
-from flask import Blueprint
+from flask_restful import Api, Resource, fields, marshal_with
+from flask import Blueprint, request
 from app.service.user import UserService
+from .dto.user import UserDetail, CreateResponse, CreateUserReqeust
+from .dto.group import GroupList
 
 user_bp = Blueprint('user', __name__, url_prefix="/users")
 user_api = Api(user_bp)
 
 
-class UnixMillisecond(fields.Raw):
-    def format(self, value: datetime) -> float:
-        microseconds = time.mktime(value.timetuple()) * 1000 + value.microsecond
-        return microseconds
-
-
-create_fields = {
-    'id': fields.Integer,
-}
-user_profile = {
-    'age': fields.Integer,
-}
-user_detail = {
-    'id': fields.Integer,
-    'username': fields.String,
-    'email': fields.String,
-    'created_at': UnixMillisecond(attribute='created_at'),
-    'profile': fields.Nested(user_profile)
-}
-
-
 class UserAPI(Resource):
 
-    def __init__(self):
-        self.post_parser = reqparse.RequestParser()
-        self.post_parser.add_argument(
-            'username', type=str, location='json', required=True,
-        )
-        self.post_parser.add_argument(
-            'email', type=str, location='json', required=True,
-        )
-        self.post_parser.add_argument(
-            'age', type=int, location='json', required=True,
-        )
-
-    @marshal_with(user_detail)
     def get(self, user_id):
         user = UserService().get_user_by_id(user_id)
-        return user
+        return UserDetail().dump(user)
 
-    @marshal_with(create_fields)
     def post(self):
-        args = self.post_parser.parse_args()
-        user = UserService().create_user(args.username, args.email, args.age)
-        return user
-
-
-group_detail = {
-    'id': fields.Integer,
-    'name': fields.String,
-}
-group_list = {
-    'groups': fields.List(fields.Nested(group_detail)),
-}
+        req = CreateUserReqeust().load(request.json)
+        user = UserService().create_user(req.username, req.email, req.age)
+        return CreateResponse().dump(user)
 
 
 class UserGroupAPI(Resource):
 
-    def __init__(self):
-        pass
-
-    @marshal_with(group_list)
     def get(self, user_id):
         user = UserService().get_user_by_id(user_id)
         print(user.groups)
-        return {"groups": user.groups}
+        return GroupList().dump(user)
 
 
 user_api.add_resource(
