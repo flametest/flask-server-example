@@ -47,5 +47,9 @@ def create_app():
     ma.init_app(app)
     with app.app_context():
         db.create_all()
-        db.session.execute("CREATE FULLTEXT INDEX idx_node_ftxt on node (detail)")
+        a = db.session.execute(
+            "SELECT COUNT(1) indexExists FROM INFORMATION_SCHEMA.STATISTICS "
+            "WHERE table_schema=DATABASE() AND table_name='node' AND index_name='idx_node_ftxt';")
+        if a.columns('indexExists').first()[0] == 0:
+            db.session.execute("CREATE FULLTEXT INDEX idx_node_ftxt on node (detail)")
     return app
