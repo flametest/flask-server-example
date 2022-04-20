@@ -47,4 +47,5 @@ def create_app():
     ma.init_app(app)
     with app.app_context():
         db.create_all()
+        db.session.execute("CREATE FULLTEXT INDEX idx_node_ftxt on node (detail)")
     return app
