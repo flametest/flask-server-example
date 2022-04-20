@@ -34,7 +34,9 @@ class Flask(BaseFlask):
 
 def register_blueprints(app: Flask):
     from .handler import user
+    from .handler import node
     app.register_blueprint(user.user_bp)
+    app.register_blueprint(node.node_bp)
 
 
 def create_app():
