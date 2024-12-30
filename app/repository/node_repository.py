@@ -6,10 +6,10 @@ from app import db
 class NodeRepository(object):
     model = Node
 
-    def get_node_by_id(self, node_id):
+    def get_node_by_id(self, node_id: int):
         return self.model.query.filter_by(id=node_id).first()
 
-    def search_detail(self, keyword):
+    def search_detail(self, keyword: str):
         # return self.model.query.filter(self.model.detail.match(keyword)).all()
         # return select(self.model, self.model.detail.match(keyword).label("score")).where(
         #     self.model.detail.match(keyword)).order_by("score")
